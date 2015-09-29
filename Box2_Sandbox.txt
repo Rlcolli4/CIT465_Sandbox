@@ -1,0 +1,175 @@
+//: Box 2 - Object Creation Functions, Inheritance, Properties, Methods, Instantiation, Structs, Tupels, Enumerations
+//COPY AND PASTE INTO XCODE FOR BEST READABILITY!!!
+import UIKit
+
+//this creates a general structure for a person. Usually you want you use struts when creating something to be inherited because it is a reference and not a copy so your able to use it in a class without having to risk a copy happening.
+struct Person {
+var human = true;
+var brainFunction = true;
+}
+
+//notice that you cannot call directly from the class, you need to create a variable in order to call these for use.
+print("Is this person a human? (Person.human)")
+print("Can this person think? (Person.brainFunction)")
+let exampleOne = Person()
+print("Is this person a human? (exampleOne.human)")
+print("Can this person think? (exampleOne.brainFunction)")
+
+//This creates a class, classes can be used to inherit information as well but they should not be used as they will occassionaly pass a copy meaning information can be changed.
+class Jamie {
+var person = Person()
+var age = 45
+var gender = "girl"
+var employment = "baker"
+}
+
+//You can even reference another class that references another class meaning you can pass information down to other classes that use the same or similar information!
+class Caitlin {
+var friend = Jamie()
+var boyfriend = "true"
+var name = "Caitline"
+}
+let exampleTwo = Caitlin()
+//this is another example of how to call by class and name.
+print("This person's name is (exampleTwo.name)")
+//this is how you call inherited class items, first you reference the variable you defined the class/struct in and then you call the variable you want!
+print("This person's gender is (exampleTwo.friend.gender)")
+//you can even go three classes back!
+print("Are they a person? (exampleTwo.friend.person.human)")
+
+//in Structs, properties, like all variable types, follow the rule of var or let. If it is let it cannot be changed. This is because structs properties hold "value" types - just like standard variables. However, in classes properties can be changed no matter what they are assigned. This is because they are reference types - these can be changed when used.
+class MoreStuff {
+var volume = 20
+var area = 10
+}
+let noMoreRoom = MoreStuff()
+noMoreRoom.volume = 5
+
+//Lazy properties allow you to import data into them when you are ready. This avoids complicated issues if you have to wait for something to happen before you have all your values. The follow step creates two classes that use a lazy variable. You use "lazy" to specify that this value will be imported when needed.
+class ImportData {
+var filename = "yourInformation.txt"
+}
+class ImportManager {
+lazy var importer = ImportData ()
+var data = String
+}
+//now you can append data to the array inside of ImportManager giving the array a value.
+let myImport = ImportManager()
+myImport.data.append("Robert L Collins Jr")
+myImport.data.append("I am 23 years old")
+//Now with the array set up we can get our lazy variable ready by callling it like we do other properties in structs and classes!
+print(myImport.importer.filename)
+//the command "importer" is used to call the information from the correct place and prints the data imported!
+
+//finally there are computed properties, in Java these are similar to how you would set up objects!
+//You start by creating structs to hold the information - since they are "value" types they pass references along but these can be used to computer new values in a program.
+struct Origin {
+var newX = 0.0, newY = 0.0
+}
+//Now you can create your object and use "get" and "set" to use your old points to create new ones.
+struct MyPoint {
+var myPoint = Origin()
+var center = NewPoint {
+get {
+let centerX = myPoint.newX + (5/3)
+let centerY = myPoint.newY + (10/4)
+}
+set (newCenter) {
+myPoint.newX = newCenter.newX - (5/3)
+myPoint.newY = newCenter.newY - (10/4)
+}
+}
+}
+//This creates and sets the new point where we want it. Now we can ask the computer to implement and print it!
+var oldPoint = MyPoint(myPoint: NewPoint(x: 0.0, y: 0.0))
+let computedPoint = oldPoint.center
+oldPoint.center = Point (x: 20.0, y: 20.0)
+print("The new center point is (oldPoint.myPoint.x) and (oldPoint.myPoint.y)")
+//Now if you wanted something to be only read only, you could follow the same steps above but you would remove the get and set words. This would make it calculate all the values but make them unchangeable later one.
+struct threeDShape {
+var width = 0.0, height = 0.0, depth = 0.0
+var volume: Double {
+return width * height * depth
+}
+}
+let fourByFiveByTwo = threeDShape(width: 4.0, height: 5.0, depth: 2.0)
+print("the volume of fourByFiveByTwo is (fourByFiveByTwo.volume)")
+//this is an example of a read only object.
+
+//: Now we will start working on Enumerations. An enumeration is a place to declare cases that allow certain information to hold values. They can be written individual or all in one line seperated by commas. Each case can only hold one word not two or more.
+enum LinksInventory {
+case nothing
+case bottle
+case fairy
+case kokiri, master, biggoron
+case wooden, hyrule, mirror
+case boomerang, bow, bombs
+}
+
+//you can call it by assigning to a value. You are also able to change the value by recalling that variable and changing the value by typing ".value"
+var linksWeapon = LinksInventory.nothing
+linksWeapon = .biggoron
+linksWeapon = .boomerang
+
+//This way you can change items as you need it too. These can be linked to switches.
+var linksHand = LinksInventory.nothing
+switch linksHand {
+case .nothing:
+print ("It's dangeroius to go alone!")
+case .fairy:
+print ("Well that will revive you...")
+case .kokiri:
+print("Well that is not the best weapon")
+case .hyrule:
+print("Good protection!")
+case .boomerang:
+print("A fan favorite weapon")
+}
+
+//Enumerations are useful in a variety of circumstances including reading barcodes and QR codes (see https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Enumerations.html )
+
+//Each case in an enum can have associated values. Associated values are numbers and strings that can be shown in a case. You need to declare it a string or character in order to do this.
+enum ClassStudents {
+case Jackie(String)
+case Tyler(String)
+case Sherrie(String)
+case Robert(String)
+}
+//you can then display it using the following methods
+let student = ClassStudents.Robert
+print("This is the student (student).")
+let thought = ClassStudents.Robert("I don't like working with people")
+print("He thinks: (thought).")
+
+//Each case in an enum can have raw values. These values are given in the statement for the enumeration and are numbers. The example shows how to do this and then allow the case to auto number along the list.
+enum ImportantThingsToEarth: Int {
+case Earth = 0, Stars, Moon, Sun
+}
+//you can display it this way:
+let enumerationNumber = ImportantThingsToEarth.Stars.rawValue
+
+//Tuples are an object of information stored in one variable, they can be stored or created as follows:
+var thisIsMe = (firstName: "Robert", lastName: "Collins", middleInitial: "L")
+var myBirthDate = (0, 0, 0)
+//The first one stores a set of strings that stores data. The second stores three numbers. You can call these with the following syntax.
+var myFirstName = thisIsMe.firstName
+var myLastName = thisIsMe.lastName
+var birthDay = "My birthday is (myBirthDate.0)/(myBirthDate.1)/(myBirthDate.2)!"
+//notice taht the last one won't print a valid birthday it would look like "0/0/0"
+//In this case you can change the name of the tuple by puting in values for them shows by the following example:
+myBirthDate.0 = 1
+myBirthDate.1 = 24
+myBirthDate.2 = 1992
+//Now if we were to reprint it it would look like this!
+var changedValueBirthDay = "My actual birthday is (myBirthDate.0)/(myBirthDate.1)/(myBirthDate.2)!"
+//When creating tuples, you can't bulid the tuple and then pass in values, it doesn't work!
+var testTuple = (Int, String, Int)
+var testTuple.0 = 1
+var testTuple.1 = "This is a Test"
+var testTuple.2 = 100
+//Let's see if this works instead, we will define three variables and pass those in!
+var aA = 1
+var bB = "This is a Strring"
+var cC = true
+var testTupleTwo = (aA, bB, cC)
+//Now you can pass variables in to a tuple and define it that way! Last note, you are able to pass in numbers, strings, and boolean statements into a tuple for use!
