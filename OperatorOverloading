@@ -1,0 +1,61 @@
+//: Playground - noun: a place where people can play
+// From: http://www.raywenderlich.com/80818/operator-overloading-in-swift-tutorial
+
+import UIKit
+
+var str = "Hello, playground"
+/**********************************************************************
+* These are some of the basic ways to overload an operator. 
+* The first example is for overloading an existing operator
+* The second is creating your own operator
+***********************************************************************/
+var array = [1, 2, 3]
+var array2 = [1, 2, 3]
+
+
+/**********************************************************************
+* Here we are overloading the '+' operator
+* the "left:" and "right:" are the parameters used to specify how you
+* will treat the expression to the left of the operator and the expression
+* to the right of the operator
+***********************************************************************/
+
+func +(left: [Int], right: [Int]) -> [Int] { // 1  -overloading the '+' operator with two int arrays given and one int array returned
+    var sum = [Int]() // 2   -creating the return array
+    assert(left.count == right.count, "vector of same length only")  // 3   -make sure that there's equal amount of values in both arrays
+    for (key, _) in left.enumerate() {
+        sum.append(left[key] + right[key]) // 4
+      
+    }
+    return sum
+}
+
+
+
+var array3 = array + array2
+
+
+/**********************************************************************
+* Creating your own operator
+* infix specifies that the operator will be used between the expressions
+* the "precedence" is the priority it has over other operators
+* There is probably another location where it lists it, but here are
+* the numerical values:
+* http://stackoverflow.com/questions/28328697/what-are-the-precedence-levels-of-the-swift-operators
+* You can also type "import Swift" into XCode, command click "Swift", and 
+* it'll show the list of operators with their associated presedence
+* values.
+* The associativity means they associate with the expression to
+* the left or right
+***********************************************************************/
+
+infix operator ⊕ { associativity left precedence 140 } // 1  -
+func ⊕(left: [Int], right: [Int]) -> [Int] { // 2
+    var sum = [Int](count: left.count, repeatedValue: 0)
+    assert(left.count == right.count, "vector of same length only")
+    for (key, _) in left.enumerate() {
+        sum[key] = left[key] + right[key]
+    }
+    return sum
+}
+var sumArray = [1, 2, 3] ⊕ [1, 2, 3]
