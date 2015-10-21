@@ -1,0 +1,45 @@
+To retrieve data from Core Data
+        
+let manageContext = appDelegate.managedObjectContext
+        
+// 2
+let fetchRequest = NSFetchRequest(entityName: "YourEntityName")
+        
+        
+// 3
+do {
+            
+    let results = try manageContext.executeFetchRequest(fetchRequest)
+            
+    somethings = results as [NSManagedObject]
+            
+} catch let error as NSError {
+    print("Could not save \(error), \(error.userInfo)")
+}
+
+
+To save data to Core Data
+
+let managedContext = appDelegate.managedObjectContext
+        
+// 2
+let entity = NSEntityDescription.entityForName("YourEntityName", inManagedObjectContext: managedContext)
+        
+let something = NSManagedObject(entity: entity, insertIntoManagedObjectContext: managedContext)
+        
+// 3
+task.setValue(SomeValue, forKey: "YourAttributeName")
+task.setValue(SomeValue, forKey: "YourAttributeName")
+
+
+// 4
+do {
+            
+    try managedContext.save()
+            
+    // 5
+    somethings.append(something)
+            
+} catch let error as NSError {
+    print("Could not save \(error), \(error.userInfo)")
+}
