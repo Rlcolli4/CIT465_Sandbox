@@ -1,0 +1,297 @@
+//Sorry it took me a while to get this up! This goes in the ViewController.swift file.
+//  ViewController.swift
+//  JSON(Box7)
+//
+//  Created by Robert Leon Collins Jr on 10/10/15.
+//  Copyright © 2015 Robert Leon Collins Jr. All rights reserved.
+//
+
+import UIKit
+
+import Foundation
+
+class ViewController: UIViewController {
+    
+    @IBOutlet var button: UIButton!
+    
+    override func viewDidLoad() {
+////////////////////////////////
+        //Good Code to Parse JSON
+////////////////////////////////
+        //JSON with numbers
+        let NumberJSON = "[0,6,7,13,69,100]"
+        let data = NumberJSON.dataUsingEncoding(NSUTF8StringEncoding)!
+        
+        do {
+            guard let pasedObject: AnyObject? = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0) ) else {
+                print("Failure")
+                return
+            }
+            print("Here is teh JSON String: \(pasedObject!)")
+        }
+        catch let error {
+            print("Bad Json path \(error)")
+        }
+        
+
+////////////////////////////////////////////////////
+        //Good code for Stringify
+/////////////////////////////////////////////////////
+        /*
+        The following code is good code for JSON stringify to print JSON or objects as a String and also how to use "prettyPrinted"
+        */
+        let jsonObject: [AnyObject] = [
+            ["position": "Teacher", "ageRange": "25-65"],
+            ["position": "Student", "ageRange": "5-24"],
+        ]
+        
+        func JSONStringify(value: AnyObject,prettyPrinted:Bool = false) -> String{
+            
+            let options = prettyPrinted ? NSJSONWritingOptions.PrettyPrinted : NSJSONWritingOptions(rawValue: 0)
+            
+            
+            if NSJSONSerialization.isValidJSONObject(value) {
+                
+                do{
+                    let data = try NSJSONSerialization.dataWithJSONObject(value, options: options)
+                    if let string = NSString(data: data, encoding: NSUTF8StringEncoding) {
+                        return string as String
+                    }
+                }catch {
+                    
+                    print("error")
+                }
+                
+            }
+            return ""
+            
+        }
+
+        //This just prints out a normal string that has all the data of hte object.
+        let jsonString = JSONStringify(jsonObject)
+        print(jsonString)
+
+        //This uses pretty printed which will pring the same info as the one above but prints it out so it is easier to show.
+        let jsonStringPretty = JSONStringify(jsonObject, prettyPrinted: true)
+        print(jsonStringPretty)
+        
+        
+        //////////////////////
+        //  Good Code for Web API call
+        //////////////////////
+        let webApi = NSURL(fileURLWithPath: "api.openweathermap.org/data/2.5/weather?id=2172797&APPID=812dea426248df463a3804bcadb71fca")
+        print("This is a web API: \(webApi)")
+        do {
+        let webData = NSData(contentsOfURL: webApi)
+        var printTheData = try NSJSONSerialization.JSONObjectWithData(webData!, options: NSJSONReadingOptions.MutableContainers)
+            print(printTheData)
+        } catch let errorParse {
+            print("You made a mistake! \(errorParse)")
+        }
+        
+        
+/////////////////////////////////////////////////////
+        //NASTY PATHS FOR JSON
+/////////////////////////////////////////////////////
+        
+       /*
+        //This attempts to call item 0 in the "pasedObject" but it can't because "AnyObject?" doesn't have that the member 0
+        
+        do {
+        guard let pasedObject: AnyObject? = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0) ) else {
+        print("Failure")
+        return
+        }
+        print("Here is teh JSON String: \(pasedObject.0!)")
+        }
+        catch let error {
+        print("Bad Json path \(error)")
+        }
+
+
+        //This doesn't allow "AnyObject" to be subscripted.
+        
+        
+        do {
+        guard let pasedObject: AnyObject? = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0) ) else {
+        print("Failure")
+        return
+        }
+        print("Here is teh JSON String: \(pasedObject[0]!)")
+        }
+        catch let error {
+        print("Bad Json path \(error)")
+        }
+
+        
+        //This will not work becaus it says "Any Object" doesn't have a member 1.
+        
+        
+        do {
+            guard let pasedObject: AnyObject? = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0) ) else {
+                print("Failure")
+                return
+            }
+            
+            var locatedItem = pasedObject.1
+            
+            print("Here is teh JSON String: \(pasedObject!)")
+        }
+        catch let error {
+            print("Bad Json path \(error)")
+        }
+
+        
+        //This does not work because you can't call the value of a non-function this way!
+        
+        
+        do {
+        guard let pasedObject: AnyObject? = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0) ) else {
+        print("Failure")
+        return
+        }
+        print("Here is teh JSON String: \(pasedObject(0)!)")
+        }
+        catch let error {
+        print("Bad Json path \(error)")
+        }
+
+        
+        //This didn't work it seemed to just pass over it and not print anything... This is because it runs into a "fatal error" while unwrapping the optional. This is because (1) the api has an inappropriate key. (2) the try-catch leads to a crash because it fails instead of not failing!
+        
+        let webApi = NSURL(fileURLWithPath: "api.openweathermap.org/data/2.5/weather?q=London")
+        let testButton = NSData(contentsOfURL: webApi)
+        do {
+        guard let stringifyButton: AnyObject? = try! NSJSONSerialization.JSONObjectWithData(testButton!, options: NSJSONReadingOptions(rawValue: 0) ) else {
+        print("Failure Number Two")
+        return
+        }
+        print("Happy Path Result: \(stringifyButton)")
+        }
+        catch let error {
+        print("Bad JSON path: \(error)")
+        }
+
+        
+        
+        //Trying to parse strings didn't go well, it claims that I have an invalid character in position 1.
+        
+        let StringJSON = "[MY, NAME, IS, Robert]"
+        let dataString = StringJSON.dataUsingEncoding(NSUTF8StringEncoding)!
+        
+        do {
+        guard let parsedObject: AnyObject? = try NSJSONSerialization.JSONObjectWithData(dataString, options: NSJSONReadingOptions(rawValue: 0) ) else {
+        print("Failure")
+        return
+        }
+        print("Here is teh JSON String: \(parsedObject!)")
+        }
+        catch let error {
+        print("Bad Json path \(error)")
+        }
+    
+        
+        //Single qoutes didn't fix it either
+        
+        let StringJSON = "['MY', 'NAME', 'IS', 'Robert']"
+        let dataString = StringJSON.dataUsingEncoding(NSUTF8StringEncoding)!
+        
+        do {
+        guard let parsedObject: AnyObject? = try NSJSONSerialization.JSONObjectWithData(dataString, options: NSJSONReadingOptions(rawValue: 0) ) else {
+        print("Failure")
+        return
+        }
+        print("Here is teh JSON String: \(parsedObject!)")
+        }
+        catch let error {
+        print("Bad Json path \(error)")
+        }
+        
+        
+        
+        //This code tries using NSString to parse the JSON string and it doesn't work!
+        
+        let StringJSON = "['MY', 'NAME', 'IS', 'Robert']"
+        let dataStringOne = NSString(StringJSON.lowercaseString)
+        let dataString = StringJSON.dataUsingEncoding(NSUTF8StringEncoding)!
+
+        do {
+        guard let parsedObject: AnyObject? = try NSJSONSerialization.JSONObjectWithData(dataStringOne, options: NSJSONReadingOptions(rawValue: 0) ) else {
+        print("Failure")
+        return
+        }
+        print("Here is teh JSON String: \(parsedObject!)")
+        }
+        catch let error {
+        print("Bad Json path \(error)")
+        }
+        
+        //This code doesn't work because it detected the wrong type of value in their and stopped it.
+        
+        let NumberJSONError = "[0,6,7,13,69,100,String]"
+        let dataError = NumberJSONError.dataUsingEncoding(NSUTF8StringEncoding)!
+        
+        do {
+        guard let pasedObject: AnyObject? = try NSJSONSerialization.JSONObjectWithData(dataError, options: NSJSONReadingOptions(rawValue: 0) ) else {
+        print("Failure")
+        return
+        }
+        print("Here is teh JSON String: \(pasedObject!)")
+        }
+        catch let error {
+        print("Bad Json path \(error)")
+        }
+        
+        
+        
+        ////////////////////////////////////////////////////
+        //Nasty Path code for Stringify
+        /////////////////////////////////////////////////////
+        // This has issues without the key values being surrrounded in qoutes, because of this the keys cannot be called/converted to a string and give us an error in the code!
+        let jsonDuoObject: [AnyObject] = [
+            [position: "Teacher", "ageRange": "25-65"],
+            [position: "Student", "ageRange": "5-24"],
+        ]
+        
+        func JSONStringifyDuo(value: AnyObject,prettyPrinted:Bool = false) -> String{
+            
+            let options = prettyPrinted ? NSJSONWritingOptions.PrettyPrinted : NSJSONWritingOptions(rawValue: 0)
+            
+            
+            if NSJSONSerialization.isValidJSONObject(value) {
+                
+                do{
+                    let data = try NSJSONSerialization.dataWithJSONObject(value, options: options)
+                    if let string = NSString(data: data, encoding: NSUTF8StringEncoding) {
+                        return string as String
+                    }
+                }catch {
+                    
+                    print("error")
+                }
+                
+            }
+            return ""
+            
+        }
+        //Without the parameter, it cannot print and will not allow the code to compile.
+        let jsonDuoObjectTest = JSONStringifyDuo()
+        print(jsonString)
+
+       
+        //This uses pretty printed which will pring the same info as the one above but prints it out so it is easier to show.
+        //However, by changing the value to false we DID NOT change the pretty printed option. If you call it, it willStill print it!
+        let jsonStringPrettyDuo = JSONStringifyDuo(jsonObject, prettyPrinted: false)
+        print(jsonStringPretty)
+
+        */
+
+    }
+
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+
+}
