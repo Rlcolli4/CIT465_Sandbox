@@ -1,0 +1,45 @@
+//
+//  ViewController.swift
+//  PlaySoundAT-Swift
+//
+//  Created by MacBook FV iMAGINATION on 17/04/15.
+//  Copyright (c) 2015 FV iMAGINATION. All rights reserved.
+//
+
+//I will admit I did not do this example because I broke my own personal code... However, this example works and contains some commentary for my code. Note: You will need to create you button according to match the code below. You will also need to import your own sound and change the name and audio type to match the file name you import!
+
+import UIKit
+
+import AudioToolbox
+
+// Sound Properties (as GLOBAL VARIABLES)
+var soundURL: NSURL?
+var soundID:SystemSoundID = 0
+
+
+
+class ViewController: UIViewController {
+
+override func viewDidLoad() {
+        super.viewDidLoad()
+
+}
+
+//Changing glassSound to "bobSaget" crashes the app because it cannot find the sound when the button is pressed.
+//The same thing above happens when you change mp3 to mp4, wav, or whatever because it cannot find the type the file name is under.
+@IBAction func playSoundClip(sender: AnyObject) {
+    let filePath = NSBundle.mainBundle().pathForResource("glassSound", ofType: "mp3")
+    soundURL = NSURL(fileURLWithPath: filePath!)
+    AudioServicesCreateSystemSoundID(soundURL!, &soundID)
+    AudioServicesPlaySystemSound(soundID)
+}
+    
+    
+    
+override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+}
+
+
+}
