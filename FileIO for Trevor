@@ -1,0 +1,46 @@
+//
+//  ViewController.swift
+//  testFileIO
+//
+//  Created by Robert Leon Collins Jr on 10/21/15.
+//  Copyright © 2015 Robert Leon Collins Jr. All rights reserved.
+//
+
+import UIKit
+
+class ViewController: UIViewController {
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        let file = "file.txt" //this is the file. we will write to and read from it
+        
+        let textArray: [String: String] = ["firstPerson": "Robert", "secondPerson": "Johnny", "thirdPerson": "Chi", "fourthPerson": "Trevor"] //trying to write an array
+        
+        let text = NSDictionary(dictionary: textArray)
+        
+        if let dir : NSString = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {
+            let path = dir.stringByAppendingPathComponent(file);
+            
+            //writing
+            do {
+                try text.writeToFile(path, atomically: false)
+                print("I SUCCEEDED")
+            }
+            catch let error {"THERE IS A MISTKE!!! \(error)"}
+            
+            //reading
+            do {
+                let text2 = try NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding)
+                print(text2)
+            }
+            catch let errorTwo {"I can't read... \(errorTwo)"}
+        }
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+
+
+}
